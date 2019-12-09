@@ -14,23 +14,31 @@
         let framePerSecond = 30;
         let oneSecond = 1000;
         setInterval(() => {
-            moveEverything();
-            drawEverything();
+            moveDynamic();
+            drawStatic();
         }, oneSecond / framePerSecond);
     };
 
-    moveEverything = () => {
+    moveDynamic = () => {
         ballX += ballSpeedX; 
-        ballSpeedX++;      
+        if(ballX > canvas.width - 25){
+            ballSpeedX *= -1;
+        }
+        if(ballX<25){
+            ballSpeedX *= -1;
+        }
+
     };
 
-    drawEverything = () => {   
-        canvasContext.fillStyle = 'black';
-        canvasContext.fillRect(0, 0, canvas.width, canvas.height);
-        canvasContext.fillStyle = 'white';
-        canvasContext.fillRect(0, 210, 10, 100);
-        canvasContext.fillStyle = 'red';
-        canvasContext.fillRect(ballX, 200, 50, 25);        
+    drawStatic = () => {          
+        colorShape(0, 0, canvas.width, canvas.height, 'black');       
+        colorShape(0, 210, 10, 100, 'white');     
+        colorShape(ballX, 200, 25, 25, 'red');        
+    };
+
+    colorShape = (distanceX, distanceY, shapeHeight, shapeWidth, color) => {
+        canvasContext.fillStyle = color;
+        canvasContext.fillRect(distanceX, distanceY, shapeHeight, shapeWidth);
     };
 </script>
 

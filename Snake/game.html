@@ -26,16 +26,15 @@
     moveEverything = () => snakeX += 5;
 
     drawEverything = () => {
-        canvasContext.fillStyle = 'black';
-        canvasContext.fillRect(0, 0, canvas.width, canvas.height);
+        colorShape(canvasContext, 0, 0, canvas.width, canvas.height, 'black');
+        colorShape(snake, snakeX, 200, 50, 25, 'green');
+        colorShape(apple, 230, 230, 10, 10, 'red');
+    };
 
-        snake.fillStyle = 'green';
-        snake.fillRect(snakeX, 200, 50, 25);
-        
-
-        apple.fillStyle = 'red';
-        apple.fillRect(230, 230, 10, 10);
-    }
+    colorShape = (element, distanceX, distanceY, shapeHeight, shapeWidth, color) => {
+        element.fillStyle = color;
+        element.fillRect(distanceX, distanceY, shapeHeight, shapeWidth);
+    };
 </script>
 
 </html>
