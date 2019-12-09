@@ -23,6 +23,7 @@
         }, oneSecond / framePerSecond);
     };
 
+    //make snake move
     moveEverything = () => snakeX += 5;
 
     drawEverything = () => {
@@ -34,11 +35,13 @@
         colorCircle(apple, 230, 230, 10, 'red');
     };
 
+    //create rectangle
     colorRect = (element, distanceX, distanceY, shapeHeight, shapeWidth, color) => {
         element.fillStyle = color;
         element.fillRect(distanceX, distanceY, shapeHeight, shapeWidth);
     };
 
+    //create circle
     colorCircle = (element, distanceX, distanceY, radius, color) =>{
         element.fillStyle = color;
         element.beginPath();

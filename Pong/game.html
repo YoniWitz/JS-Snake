@@ -19,6 +19,7 @@
         }, oneSecond / framePerSecond);
     };
 
+    //make ball move
     moveDynamic = () => {
         ballX += ballSpeedX; 
         if(ballX > canvas.width - 25){
@@ -39,11 +40,13 @@
         colorCircle(canvasContext, ballX, 200, 10, 'white');
     };
 
+    //create rectangle
     colorRect = (distanceX, distanceY, shapeHeight, shapeWidth, color) => {
         canvasContext.fillStyle = color;
         canvasContext.fillRect(distanceX, distanceY, shapeHeight, shapeWidth);
     };
 
+    //create circle
     colorCircle = (element, distanceX, distanceY, radius, color) =>{
         element.fillStyle = color;
         element.beginPath();
