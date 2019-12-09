@@ -17,8 +17,13 @@
 
         let framePerSecond = 30;
         let oneSecond = 1000;
-        setInterval(drawEverything, oneSecond / framePerSecond);
-    }
+        setInterval(() => {
+            moveEverything();
+            drawEverything();
+        }, oneSecond / framePerSecond);
+    };
+
+    moveEverything = () => snakeX += 5;
 
     drawEverything = () => {
         canvasContext.fillStyle = 'black';
@@ -26,7 +31,7 @@
 
         snake.fillStyle = 'green';
         snake.fillRect(snakeX, 200, 50, 25);
-        snakeX += 5;
+        
 
         apple.fillStyle = 'red';
         apple.fillRect(230, 230, 10, 10);
