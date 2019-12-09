@@ -30,16 +30,26 @@
 
     };
 
-    drawStatic = () => {          
-        colorShape(0, 0, canvas.width, canvas.height, 'black');       
-        colorShape(0, 210, 10, 100, 'white');     
-        colorShape(ballX, 200, 25, 25, 'red');        
+    drawStatic = () => {   
+        //canvas       
+        colorRect(0, 0, canvas.width, canvas.height, 'black');      
+        //left player paddle 
+        colorRect(0, 210, 10, 100, 'white');     
+        //ball
+        colorCircle(canvasContext, ballX, 200, 10, 'white');
     };
 
-    colorShape = (distanceX, distanceY, shapeHeight, shapeWidth, color) => {
+    colorRect = (distanceX, distanceY, shapeHeight, shapeWidth, color) => {
         canvasContext.fillStyle = color;
         canvasContext.fillRect(distanceX, distanceY, shapeHeight, shapeWidth);
     };
+
+    colorCircle = (element, distanceX, distanceY, radius, color) =>{
+        element.fillStyle = color;
+        element.beginPath();
+        element.arc(distanceX, distanceY, radius, 0 , Math.PI*2, true);
+        element.fill();
+    }
 </script>
 
 </html>
