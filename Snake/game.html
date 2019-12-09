@@ -1,12 +1,16 @@
 <html>
-    some text here
+    
     <canvas id= "gameCanvas" width = "800" height="600"></canvas>
     <script>
         let canvas;
         let canvasContext;
+        let snake;
+        let apple;
         window.onload = () => {
-            console.log("hello world");
+            console.log("snake game");
             canvas = document.getElementById('gameCanvas');
+            snake = canvas.getContext('2d');
+            apple = canvas.getContext('2d');
             canvasContext = canvas.getContext('2d');
             drawEverything();
             
@@ -15,9 +19,9 @@
         drawEverything = () =>{
             canvasContext.fillStyle = 'black';
             canvasContext.fillRect(0,0,canvas.width, canvas.height);
-            canvasContext.fillStyle = 'red';
+            snake.fillStyle = 'green';
             canvasContext.fillRect(100,200, 50, 25);
-            canvasContext.fillStyle = 'green';
+            apple.fillStyle = 'red';
             canvasContext.fillRect(230,230, 10, 10);
         }
     </script>
