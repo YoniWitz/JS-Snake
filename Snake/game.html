@@ -1,34 +1,36 @@
 <html>
-    
-    <canvas id= "gameCanvas" width = "800" height="600"></canvas>
-    <script>
-        let canvas;
-        let canvasContext;
-        let snake;
-        let apple;
-        let snakeX = 0;
-        
-        window.onload = () => {
-            console.log("snake game");
-            canvas = document.getElementById('gameCanvas');
-            snake = canvas.getContext('2d');
-            apple = canvas.getContext('2d');
-            canvasContext = canvas.getContext('2d');
-            
-            setInterval(drawEverything, 1000);
-            
-        }
 
-        drawEverything = () =>{
-            canvasContext.fillStyle = 'black';
-            canvasContext.fillRect(0,0,canvas.width, canvas.height);
+<canvas id="gameCanvas" width="800" height="600"></canvas>
+<script>
+    let canvas;
+    let canvasContext;
+    let snake;
+    let apple;
+    let snakeX = 0;
 
-            snake.fillStyle = 'green';
-            snake.fillRect(snakeX,200, 50, 25);
-            snakeX += 10;
+    window.onload = () => {
+        console.log("snake game");
+        canvas = document.getElementById('gameCanvas');
+        snake = canvas.getContext('2d');
+        apple = canvas.getContext('2d');
+        canvasContext = canvas.getContext('2d');
 
-            apple.fillStyle = 'red';
-            apple.fillRect(230,230, 10, 10);
-        }
-    </script>
+        let framePerSecond = 30;
+        let oneSecond = 1000;
+        setInterval(drawEverything, oneSecond / framePerSecond);
+    }
+
+    drawEverything = () => {
+        canvasContext.fillStyle = 'black';
+        canvasContext.fillRect(0, 0, canvas.width, canvas.height);
+
+        snake.fillStyle = 'green';
+        snake.fillRect(snakeX, 200, 50, 25);
+        snakeX += 5;
+
+        apple.fillStyle = 'red';
+        apple.fillRect(230, 230, 10, 10);
+    }
+</script>
+
 </html>
