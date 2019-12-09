@@ -23,21 +23,31 @@
         }, oneSecond / framePerSecond);
     };
 
+    //make snake move
     moveEverything = () => snakeX += 5;
 
     drawEverything = () => {
         //canvas
-        colorShape(canvasContext, 0, 0, canvas.width, canvas.height, 'black');
+        colorRect(canvasContext, 0, 0, canvas.width, canvas.height, 'black');
         //snake
-        colorShape(snake, snakeX, 200, 50, 25, 'green');
-        //apple
-        colorShape(apple, 230, 230, 10, 10, 'red');
+        colorRect(snake, snakeX, 200, 50, 25, 'green');
+        //apple     
+        colorCircle(apple, 230, 230, 10, 'red');
     };
 
-    colorShape = (element, distanceX, distanceY, shapeHeight, shapeWidth, color) => {
+    //create rectangle
+    colorRect = (element, distanceX, distanceY, shapeHeight, shapeWidth, color) => {
         element.fillStyle = color;
         element.fillRect(distanceX, distanceY, shapeHeight, shapeWidth);
     };
+
+    //create circle
+    colorCircle = (element, distanceX, distanceY, radius, color) =>{
+        element.fillStyle = color;
+        element.beginPath();
+        element.arc(distanceX, distanceY, radius, 0 , Math.PI*2, true);
+        element.fill();
+    }
 </script>
 
 </html>
