@@ -1,28 +1,29 @@
 <html>
-    
-    <canvas id= "gameCanvas" width = "800" height="600"></canvas>
-    <script>
-        let canvas;
-        let canvasContext;
-        let ballX = 50;
-        window.onload = () => {
-            
-            canvas = document.getElementById('gameCanvas');
-            canvasContext = canvas.getContext('2d');
-            
-            setInterval(drawEverything,1000);
-            
-        }
 
-        drawEverything = () =>{
-            console.log(ballX);
-            ballX += 50;
-            canvasContext.fillStyle = 'black';
-            canvasContext.fillRect(0,0,canvas.width, canvas.height);
-            canvasContext.fillStyle = 'white';
-            canvasContext.fillRect(225,210, 200, 200);
-            canvasContext.fillStyle = 'red';
-            canvasContext.fillRect(ballX,200, 50, 25);
-        }
-    </script>
+<canvas id="gameCanvas" width="800" height="600"></canvas>
+<script>
+    let canvas;
+    let canvasContext;
+    let ballX = 50;
+    window.onload = () => {
+        canvas = document.getElementById('gameCanvas');
+        canvasContext = canvas.getContext('2d');
+
+        let framePerSecond = 30;
+        let oneSecond = 1000;
+        setInterval(drawEverything, oneSecond / framePerSecond);
+    }
+
+    drawEverything = () => {
+        ballX += 5;
+        
+        canvasContext.fillStyle = 'black';
+        canvasContext.fillRect(0, 0, canvas.width, canvas.height);
+        canvasContext.fillStyle = 'white';
+        canvasContext.fillRect(225, 210, 200, 200);
+        canvasContext.fillStyle = 'red';
+        canvasContext.fillRect(ballX, 200, 50, 25);
+    }
+</script>
+
 </html>
