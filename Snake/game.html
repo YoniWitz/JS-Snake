@@ -26,8 +26,11 @@
     moveEverything = () => snakeX += 5;
 
     drawEverything = () => {
+        //canvas
         colorShape(canvasContext, 0, 0, canvas.width, canvas.height, 'black');
+        //snake
         colorShape(snake, snakeX, 200, 50, 25, 'green');
+        //apple
         colorShape(apple, 230, 230, 10, 10, 'red');
     };
 
