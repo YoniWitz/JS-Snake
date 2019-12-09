@@ -1,0 +1,2 @@
+# MySnakeGame
+Vanilla JS
