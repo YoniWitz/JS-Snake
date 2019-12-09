@@ -6,23 +6,29 @@
         let canvasContext;
         let snake;
         let apple;
+        let snakeX = 0;
+        
         window.onload = () => {
             console.log("snake game");
             canvas = document.getElementById('gameCanvas');
             snake = canvas.getContext('2d');
             apple = canvas.getContext('2d');
             canvasContext = canvas.getContext('2d');
-            drawEverything();
+            
+            setInterval(drawEverything, 1000);
             
         }
 
         drawEverything = () =>{
             canvasContext.fillStyle = 'black';
             canvasContext.fillRect(0,0,canvas.width, canvas.height);
+
             snake.fillStyle = 'green';
-            canvasContext.fillRect(100,200, 50, 25);
+            snake.fillRect(snakeX,200, 50, 25);
+            snakeX += 10;
+
             apple.fillStyle = 'red';
-            canvasContext.fillRect(230,230, 10, 10);
+            apple.fillRect(230,230, 10, 10);
         }
     </script>
 </html>
