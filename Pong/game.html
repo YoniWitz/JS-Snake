@@ -45,6 +45,12 @@
         });
     };
 
+    //reset ball position
+    ballReset = () => {
+        ballSpeedX = -ballSpeedX;
+        ballX = canvas.width / 2;
+        ballY = canvas.height / 2;
+    }
     //make ball move
     changeXY = () => {
         ballX += ballSpeedX;
@@ -52,10 +58,12 @@
 
         //x axis movement
         if (ballX > canvas.width - ballRadius) {
-            ballSpeedX *= -1;
+            //ballSpeedX *= -1;
+            ballReset();
         }
         if (ballX < ballRadius) {
-            ballSpeedX *= -1;
+            //ballSpeedX *= -1;
+            ballReset();
         }
 
         //y axis movement
