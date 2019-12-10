@@ -7,14 +7,22 @@
 
     let ballRadius = 10;
 
+    //ball params
     let ballX = 50;
     let ballSpeedX = 5;
 
     let ballY = 50;
     let ballSpeedY = 5;
 
+    //paddle1 params
     let paddle1Y = 250;
+    let paddle1score = 0;
+
+    //paddle params
     let paddle2Y = 250;
+    let paddle2score = 0;
+
+
     const PADDLE_HEIGHT = 100;
     const PADDLE_WIDTH = 10;
 
@@ -81,16 +89,20 @@
         if (ballX > canvas.width - ballRadius) {
             if (ballY > paddle2Y && ballY < paddle2Y + PADDLE_HEIGHT)
                 ballSpeedX *= -1;
-            else
+            else{
+                paddle1score++;
                 ballReset();
+            }
         }
 
         //collision on left side
         if (ballX < ballRadius) {
             if (ballY > paddle1Y && ballY < paddle1Y + PADDLE_HEIGHT)
                 ballSpeedX *= -1;
-            else
+            else{
+                paddle2score++;
                 ballReset();
+            }
         }
 
         //y axis movement
@@ -114,6 +126,9 @@
 
         //ball
         colorCircle(ballX, ballY, ballRadius, 'white');
+
+        //score
+        canvasContext.fillText(paddle1score + ' : ' + paddle2score, canvas.width/2, 100);
     };
 
     //create rectangle
