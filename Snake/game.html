@@ -4,12 +4,11 @@
 <script>
     const WIDTH = 800;
     const HEIGHT = 600;
-    let canvas;
-    
 
+    let canvas;
     let canvasContext;
-    
-    
+
+    //snake params
     let snake;
     let snakeWidth = 50;
     const SNAKE_HEIGHT = 25;
@@ -18,13 +17,13 @@
     let snakeY = Math.random() * HEIGHT - SNAKE_HEIGHT;//this way snake starts fully on canvas
     let xIncrement = 0;
     let yIncrement = 0;
-    
 
+    //apple params
     let apple;
     const APPLE_RADIUS = 10;
-    let appleX = Math.random() * (WIDTH - APPLE_RADIUS*2) + 10; //x and y coordinates are from center of circle
-    let appleY = Math.random() * (HEIGHT - APPLE_RADIUS*2) + 10;//this way the circle is fully in the canvas
-    
+    let appleX = Math.random() * (WIDTH - APPLE_RADIUS * 2) + 10; //x and y coordinates are from center of circle
+    let appleY = Math.random() * (HEIGHT - APPLE_RADIUS * 2) + 10;//this way the circle is fully in the canvas
+
 
     window.onload = () => {
         canvas = document.getElementById('gameCanvas');
@@ -39,37 +38,52 @@
             drawEverything();
         }, oneSecond / framePerSecond);
 
-        document.addEventListener('keydown', (event) =>{
-            var code = event.which || event.keyCode;
-             switch(code){
-                 //right arrow
-                 case 39:
-                    xIncrement = INCREMENT;
-                    yIncrement = 0;
-                    break;
-                //left arrow
-                case 37:
-                    xIncrement = -INCREMENT;
-                    yIncrement = 0;
-                    break;
-                //up arrow
-                case 38: 
-                    yIncrement = -INCREMENT;
-                    xIncrement = 0;
-                    break; 
-                //down arrow
-                case 40: 
-                    yIncrement = INCREMENT;
-                    xIncrement = 0;
-                    break; 
-             }
-        });
+        document.addEventListener('keydown', arrowPressed);
+    };
+
+    arrowPressed = (event) =>{
+        var code = event.which || event.keyCode;
+        switch (code) {
+            //right arrow
+            case 39:
+                xIncrement = INCREMENT;
+                yIncrement = 0;
+                break;
+            //left arrow
+            case 37:
+                xIncrement = -INCREMENT;
+                yIncrement = 0;
+                break;
+            //up arrow
+            case 38:
+                yIncrement = -INCREMENT;
+                xIncrement = 0;
+                break;
+            //down arrow
+            case 40:
+                yIncrement = INCREMENT;
+                xIncrement = 0;
+                break;
+        }
     };
 
     //make snake move
     moveEverything = () => {
         snakeX += xIncrement;
         snakeY += yIncrement;
+
+        //keeping snake in canvas
+        if(snakeX > WIDTH)
+            snakeX = 0;
+        if(snakeX < 0){
+            snakeX = 800;
+        }
+        if(snakeY > HEIGHT){
+            snakeY = 0;
+        }
+        if(snakeY < 0){
+            snakeY = HEIGHT;
+        }       
     }
 
     drawEverything = () => {
