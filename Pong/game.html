@@ -21,7 +21,7 @@
         let root = document.documentElement;
         let mouseX = event.clientX - rect.left - root.scrollLeft;
         let mouseY = event.clientY - rect.top - root.scrollTop;
-        
+
         return {
             x: mouseX,
             y: mouseY
@@ -39,10 +39,19 @@
             drawEverything();
         }, oneSecond / framePerSecond);
 
-        canvas.addEventListener('mousemove', (event) =>{
-            let mousePos = calculateMousePosition(event);
-            paddle1Y = mousePos.y - PADDLE_HEIGHT/2;
-        });
+        //mouse movement listener
+        canvas.addEventListener('mousemove', mouseMoved);
+    };
+
+    //mouse listener function
+    mouseMoved = (event) => {
+        let mousePos = calculateMousePosition(event);
+        paddle1Y = mousePos.y;
+
+        //if paddle goes outside y axis
+        if (paddle1Y > canvas.height - PADDLE_HEIGHT) {
+            paddle1Y = canvas.height - PADDLE_HEIGHT;
+        }
     };
 
     //reset ball position
@@ -58,12 +67,14 @@
 
         //x axis movement
         if (ballX > canvas.width - ballRadius) {
-            //ballSpeedX *= -1;
-            ballReset();
+            ballSpeedX *= -1;
+            //ballReset();
         }
         if (ballX < ballRadius) {
-            //ballSpeedX *= -1;
-            ballReset();
+            if (ballY > paddle1Y && ballY < paddle1Y + PADDLE_HEIGHT)
+                ballSpeedX *= -1;
+            else
+                ballReset();
         }
 
         //y axis movement

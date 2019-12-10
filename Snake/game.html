@@ -13,23 +13,23 @@
     let snakeWidth = 50;
     const SNAKE_HEIGHT = 25;
     const INCREMENT = 5;
-    let snakeX = Math.random() * WIDTH - snakeWidth;//x and y coordinates are from top left corner.
-    let snakeY = Math.random() * HEIGHT - SNAKE_HEIGHT;//this way snake starts fully on canvas
+    let snakeX = Math.random() * WIDTH - snakeWidth;//x and y coordinates are from top left corner of snake.
+    let snakeY = Math.random() * HEIGHT - SNAKE_HEIGHT;//must makesure snake starts fully on canvas
     let xIncrement = 0;
     let yIncrement = 0;
 
     //apple params
     let apple;
     const APPLE_RADIUS = 10;
-    let appleX = Math.random() * (WIDTH - APPLE_RADIUS * 2) + 10; //x and y coordinates are from center of circle
-    let appleY = Math.random() * (HEIGHT - APPLE_RADIUS * 2) + 10;//this way the circle is fully in the canvas
-
+    let appleX; //x and y coordinates are from center of circle
+    let appleY;//this way the circle is fully in the canvas
 
     window.onload = () => {
         canvas = document.getElementById('gameCanvas');
         snake = canvas.getContext('2d');
         apple = canvas.getContext('2d');
         canvasContext = canvas.getContext('2d');
+        appleReset();
 
         let framePerSecond = 30;
         let oneSecond = 1000;
@@ -38,15 +38,17 @@
             drawEverything();
         }, oneSecond / framePerSecond);
 
+        //arrows listener
         document.addEventListener('keydown', arrowPressed);
     };
 
     //reset apple position
     appleReset = () => {
-        appleX = canvas.width / 2;
-        appleY = canvas.height / 2;
+        appleX = Math.random() * (WIDTH - APPLE_RADIUS * 2) + APPLE_RADIUS;
+        appleY = Math.random() * (HEIGHT - APPLE_RADIUS * 2) + APPLE_RADIUS;
     }
 
+    //arrow listener function
     arrowPressed = (event) =>{
         var code = event.which || event.keyCode;
         switch (code) {
@@ -92,7 +94,8 @@
         }
 
         //collission
-        if(snakeY === appleY && snakeX === appleX)   
+        if((snakeY > appleY - APPLE_RADIUS && snakeY < appleY + APPLE_RADIUS) 
+        && (snakeX > appleX - APPLE_RADIUS && snakeX < appleX + APPLE_RADIUS)  ) 
         {
             appleReset();
         }
@@ -120,6 +123,7 @@
         element.arc(distanceX, distanceY, radius, 0, Math.PI * 2, true);
         element.fill();
     }
+
 </script>
 
 </html>
