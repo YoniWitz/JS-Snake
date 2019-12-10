@@ -13,9 +13,11 @@
     let snake;
     let snakeWidth = 50;
     const SNAKE_HEIGHT = 25;
+    const INCREMENT = 5;
     let snakeX = Math.random() * WIDTH - snakeWidth;//x and y coordinates are from top left corner.
     let snakeY = Math.random() * HEIGHT - SNAKE_HEIGHT;//this way snake starts fully on canvas
-    let xIncrement = 5;
+    let xIncrement = 0;
+    let yIncrement = 0;
     
 
     let apple;
@@ -40,19 +42,35 @@
         document.addEventListener('keydown', (event) =>{
             var code = event.which || event.keyCode;
              switch(code){
+                 //right arrow
                  case 39:
-                    xIncrement = Math.abs(xIncrement);
+                    xIncrement = INCREMENT;
+                    yIncrement = 0;
                     break;
+                //left arrow
                 case 37:
-                    xIncrement = Math.abs(xIncrement) * -1;
+                    xIncrement = -INCREMENT;
+                    yIncrement = 0;
                     break;
+                //up arrow
+                case 38: 
+                    yIncrement = -INCREMENT;
+                    xIncrement = 0;
+                    break; 
+                //down arrow
+                case 40: 
+                    yIncrement = INCREMENT;
+                    xIncrement = 0;
+                    break; 
              }
-
         });
     };
 
     //make snake move
-    moveEverything = () => snakeX += xIncrement;
+    moveEverything = () => {
+        snakeX += xIncrement;
+        snakeY += yIncrement;
+    }
 
     drawEverything = () => {
         //canvas
