@@ -48,7 +48,11 @@
     //mouse listener function
     mouseMoved = (event) => {
         let mousePos = calculateMousePosition(event);
-        paddle1Y = mousePos.y;
+        if(mousePos.x > canvas.width/2)
+            paddle2Y = mousePos.y;
+        else{
+            paddle1Y = mousePos.y;
+        }
 
         //if paddle goes outside y axis
         if (paddle1Y > canvas.height - PADDLE_HEIGHT) {
@@ -73,7 +77,7 @@
 
         //x axis movement
 
-        //collision on left side
+        //collision on right side
         if (ballX > canvas.width - ballRadius) {
             if (ballY > paddle2Y && ballY < paddle2Y + PADDLE_HEIGHT)
                 ballSpeedX *= -1;
@@ -81,7 +85,7 @@
                 ballReset();
         }
 
-        //collision on right side
+        //collision on left side
         if (ballX < ballRadius) {
             if (ballY > paddle1Y && ballY < paddle1Y + PADDLE_HEIGHT)
                 ballSpeedX *= -1;
