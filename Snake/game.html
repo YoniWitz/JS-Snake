@@ -41,6 +41,12 @@
         document.addEventListener('keydown', arrowPressed);
     };
 
+    //reset apple position
+    appleReset = () => {
+        appleX = canvas.width / 2;
+        appleY = canvas.height / 2;
+    }
+
     arrowPressed = (event) =>{
         var code = event.which || event.keyCode;
         switch (code) {
@@ -83,7 +89,13 @@
         }
         if(snakeY < 0){
             snakeY = HEIGHT;
-        }       
+        }
+
+        //collission
+        if(snakeY === appleY && snakeX === appleX)   
+        {
+            appleReset();
+        }
     }
 
     drawEverything = () => {
