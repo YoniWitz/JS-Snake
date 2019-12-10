@@ -2,14 +2,29 @@
 
 <canvas id="gameCanvas" width="800" height="600"></canvas>
 <script>
+    const WIDTH = 800;
+    const HEIGHT = 600;
     let canvas;
+    
+
     let canvasContext;
+    
+    
     let snake;
+    let snakeWidth = 50;
+    const SNAKE_HEIGHT = 25;
+    let snakeX = Math.random() * WIDTH - snakeWidth;//x and y coordinates are from top left corner.
+    let snakeY = Math.random() * HEIGHT - SNAKE_HEIGHT;//this way snake starts fully on canvas
+    let xIncrement = 5;
+    
+
     let apple;
-    let snakeX = 0;
+    const APPLE_RADIUS = 10;
+    let appleX = Math.random() * (WIDTH - APPLE_RADIUS*2) + 10; //x and y coordinates are from center of circle
+    let appleY = Math.random() * (HEIGHT - APPLE_RADIUS*2) + 10;//this way the circle is fully in the canvas
+    
 
     window.onload = () => {
-        console.log("snake game");
         canvas = document.getElementById('gameCanvas');
         snake = canvas.getContext('2d');
         apple = canvas.getContext('2d');
@@ -21,18 +36,31 @@
             moveEverything();
             drawEverything();
         }, oneSecond / framePerSecond);
+
+        document.addEventListener('keydown', (event) =>{
+            var code = event.which || event.keyCode;
+             switch(code){
+                 case 39:
+                    xIncrement = Math.abs(xIncrement);
+                    break;
+                case 37:
+                    xIncrement = Math.abs(xIncrement) * -1;
+                    break;
+             }
+
+        });
     };
 
     //make snake move
-    moveEverything = () => snakeX += 5;
+    moveEverything = () => snakeX += xIncrement;
 
     drawEverything = () => {
         //canvas
         colorRect(canvasContext, 0, 0, canvas.width, canvas.height, 'black');
         //snake
-        colorRect(snake, snakeX, 200, 50, 25, 'green');
+        colorRect(snake, snakeX, snakeY, snakeWidth, SNAKE_HEIGHT, 'green');
         //apple     
-        colorCircle(apple, 230, 230, 10, 'red');
+        colorCircle(apple, appleX, appleY, APPLE_RADIUS, 'red');
     };
 
     //create rectangle
