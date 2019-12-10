@@ -4,8 +4,14 @@
 <script>
     let canvas;
     let canvasContext;
+
+    let ballRadius = 10;
+
     let ballX = 50;
     let ballSpeedX = 5;
+
+    let ballY = 50;
+    let ballSpeedY = 5;
 
     window.onload = () => {
         canvas = document.getElementById('gameCanvas');
@@ -14,30 +20,40 @@
         let framePerSecond = 30;
         let oneSecond = 1000;
         setInterval(() => {
-            moveDynamic();
-            drawStatic();
+            changeXY();
+            drawEverything();
         }, oneSecond / framePerSecond);
     };
 
     //make ball move
-    moveDynamic = () => {
-        ballX += ballSpeedX; 
-        if(ballX > canvas.width - 25){
+    changeXY = () => {
+        ballX += ballSpeedX;
+        ballY += ballSpeedY;
+
+        //x axis movement
+        if (ballX > canvas.width - ballRadius) {
             ballSpeedX *= -1;
         }
-        if(ballX<25){
+        if (ballX < ballRadius) {
             ballSpeedX *= -1;
         }
 
+        //y axis movement
+        if(ballY > canvas.height - ballRadius){
+            ballSpeedY *= -1;
+        }
+        if(ballY < ballRadius){
+            ballSpeedY *= -1;
+        }
     };
 
-    drawStatic = () => {   
+    drawEverything = () => {
         //canvas       
-        colorRect(0, 0, canvas.width, canvas.height, 'black');      
+        colorRect(0, 0, canvas.width, canvas.height, 'black');
         //left player paddle 
-        colorRect(0, 210, 10, 100, 'white');     
+        colorRect(0, 210, 10, 100, 'white');
         //ball
-        colorCircle(canvasContext, ballX, 200, 10, 'white');
+        colorCircle(ballX, ballY, ballRadius, 'white');
     };
 
     //create rectangle
@@ -47,11 +63,11 @@
     };
 
     //create circle
-    colorCircle = (element, distanceX, distanceY, radius, color) =>{
-        element.fillStyle = color;
-        element.beginPath();
-        element.arc(distanceX, distanceY, radius, 0 , Math.PI*2, true);
-        element.fill();
+    colorCircle = (distanceX, distanceY, radius, color) => {
+        canvasContext.fillStyle = color;
+        canvasContext.beginPath();
+        canvasContext.arc(distanceX, distanceY, radius, 0, Math.PI * 2, true);
+        canvasContext.fill();
     }
 </script>
 
