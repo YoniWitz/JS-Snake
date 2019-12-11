@@ -56,9 +56,9 @@
     //mouse listener function
     mouseMoved = (event) => {
         let mousePos = calculateMousePosition(event);
-        if(mousePos.x > canvas.width/2)
+        if (mousePos.x > canvas.width / 2)
             paddle2Y = mousePos.y;
-        else{
+        else {
             paddle1Y = mousePos.y;
         }
 
@@ -75,6 +75,7 @@
     //reset ball position
     ballReset = () => {
         ballSpeedX = -ballSpeedX;
+        
         ballX = canvas.width / 2;
         ballY = canvas.height / 2;
     }
@@ -87,9 +88,15 @@
 
         //collision on right side
         if (ballX > canvas.width - ballRadius) {
-            if (ballY > paddle2Y && ballY < paddle2Y + PADDLE_HEIGHT)
+            if (ballY > paddle2Y && ballY < paddle2Y + PADDLE_HEIGHT) {
                 ballSpeedX *= -1;
-            else{
+
+                //give ball an emph based on location of paddle hit
+                let deltaY = (ballY - (paddle2Y + PADDLE_HEIGHT / 2)) * 0.35;
+                let deltaX = deltaY;
+                ballSpeedY = deltaY;
+            }
+            else {
                 paddle1score++;
                 ballReset();
             }
@@ -97,19 +104,22 @@
 
         //collision on left side
         if (ballX < ballRadius) {
-            if (ballY > paddle1Y && ballY < paddle1Y + PADDLE_HEIGHT)
+            if (ballY > paddle1Y && ballY < paddle1Y + PADDLE_HEIGHT) {
                 ballSpeedX *= -1;
-            else{
+
+                //give ball an emph based on location of paddle hit
+                let deltaY = (ballY - (paddle1Y + PADDLE_HEIGHT / 2)) * 0.3;
+                let deltaX = deltaY;
+                ballSpeedY = deltaY;
+            }
+            else {
                 paddle2score++;
                 ballReset();
             }
         }
 
         //y axis movement
-        if (ballY > canvas.height - ballRadius) {
-            ballSpeedY *= -1;
-        }
-        if (ballY < ballRadius) {
+        if (ballY > canvas.height - ballRadius || ballY < ballRadius) {
             ballSpeedY *= -1;
         }
     };
@@ -128,7 +138,7 @@
         colorCircle(ballX, ballY, ballRadius, 'white');
 
         //score
-        canvasContext.fillText(paddle1score + ' : ' + paddle2score, canvas.width/2, 100);
+        canvasContext.fillText(paddle1score + ' : ' + paddle2score, canvas.width / 2, 100);
     };
 
     //create rectangle
