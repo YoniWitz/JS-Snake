@@ -27,26 +27,33 @@
     const WINNING_SCORE = 3;
 
     let display = true;
+    let drawGame = null;
 
     window.onload = () => {
         canvas = document.getElementById('gameCanvas');
         canvasContext = canvas.getContext('2d');
 
-        let framePerSecond = 30;
-        let oneSecond = 1000;
-
         //mouse movement listener
         canvas.addEventListener('mousemove', mouseMoved);
 
         document.addEventListener('keydown', keyPressed);
+        manageInterval();
+    };
 
-        setInterval(() => {
-            if (display) {               
+    //set interval manager
+    manageInterval = () => {
+        if (display) {
+            let framePerSecond = 30;
+            let oneSecond = 1000;
+            drawGame = setInterval(() => {
                 drawEverything();
                 changeXY();
-            }
-        }, oneSecond / framePerSecond);
-    };
+            }, oneSecond / framePerSecond);
+        }
+        else {
+            clearInterval(drawGame);
+        }
+    }
 
     //mouse location
     calculateMousePosition = (event) => {
@@ -80,23 +87,27 @@
         }
     };
 
-    //
-    keyPressed = () => display = true;
+    //key pressed function
+    keyPressed = () => { 
+        display = true; 
+        manageInterval(); 
+    }
 
     //reset ball position and check for winner
     ballReset = () => {
         //do we have a winner?
         if (paddle2score >= WINNING_SCORE || paddle1score >= WINNING_SCORE) {
             display = false;
+            manageInterval();
             canvasContext.fillStyle = "white";
-            
+
             canvasContext.fillText('we have a winner!! press any key to contine', canvas.width / 2, 50);
-            if(paddle2score > paddle1score)
+            if (paddle2score > paddle1score)
                 canvasContext.fillText('right side wins!!', canvas.width / 2, 75);
             else
                 canvasContext.fillText('left side wins!!', canvas.width / 2, 75);
-            
-                canvasContext.fillText(paddle1score + ' : ' + paddle2score, canvas.width / 2, 100);
+
+            canvasContext.fillText(paddle1score + ' : ' + paddle2score, canvas.width / 2, 100);
             paddle2score = paddle1score = 0;
         }
 
@@ -156,12 +167,12 @@
     };
 
     drawEverything = () => {
-       //canvas. all other stuff should be added AFTER this one 
+        //canvas. all other stuff should be added AFTER this one 
         colorRect(0, 0, canvas.width, canvas.height, 'black');
 
         //net
-         for(let i =0;i<canvas.height; i+=40){
-            colorRect(canvas.width/2, i, 2, 20, 'white');
+        for (let i = 0; i < canvas.height; i += 40) {
+            colorRect(canvas.width / 2, i, 2, 20, 'white');
         }
 
         //left player paddle 
