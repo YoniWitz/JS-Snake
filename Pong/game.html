@@ -89,8 +89,14 @@
         if (paddle2score >= WINNING_SCORE || paddle1score >= WINNING_SCORE) {
             display = false;
             canvasContext.fillStyle = "white";
+            
             canvasContext.fillText('we have a winner!! press any key to contine', canvas.width / 2, 50);
-            canvasContext.fillText(paddle1score + ' : ' + paddle2score, canvas.width / 2, 100);
+            if(paddle2score > paddle1score)
+                canvasContext.fillText('right side wins!!', canvas.width / 2, 75);
+            else
+                canvasContext.fillText('left side wins!!', canvas.width / 2, 75);
+            
+                canvasContext.fillText(paddle1score + ' : ' + paddle2score, canvas.width / 2, 100);
             paddle2score = paddle1score = 0;
         }
 
@@ -150,8 +156,13 @@
     };
 
     drawEverything = () => {
-        //canvas       
+       //canvas. all other stuff should be added AFTER this one 
         colorRect(0, 0, canvas.width, canvas.height, 'black');
+
+        //net
+         for(let i =0;i<canvas.height; i+=40){
+            colorRect(canvas.width/2, i, 2, 20, 'white');
+        }
 
         //left player paddle 
         colorRect(0, paddle1Y, PADDLE_WIDTH, PADDLE_HEIGHT, 'white');
