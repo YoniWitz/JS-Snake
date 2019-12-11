@@ -8,10 +8,10 @@
     let ballRadius = 10;
 
     //ball params
-    let ballX = 50;
+    let ballX = 400;
     let ballSpeedX = 5;
 
-    let ballY = 50;
+    let ballY = 300;
     let ballSpeedY = 5;
 
     //paddle1 params
@@ -21,11 +21,34 @@
     //paddle params
     let paddle2Y = 250;
     let paddle2score = 0;
-
-
     const PADDLE_HEIGHT = 100;
     const PADDLE_WIDTH = 10;
 
+    const WINNING_SCORE = 3;
+
+    let display = true;
+
+    window.onload = () => {
+        canvas = document.getElementById('gameCanvas');
+        canvasContext = canvas.getContext('2d');
+
+        let framePerSecond = 30;
+        let oneSecond = 1000;
+
+        //mouse movement listener
+        canvas.addEventListener('mousemove', mouseMoved);
+
+        document.addEventListener('keydown', keyPressed);
+
+        setInterval(() => {
+            if (display) {               
+                drawEverything();
+                changeXY();
+            }
+        }, oneSecond / framePerSecond);
+    };
+
+    //mouse location
     calculateMousePosition = (event) => {
         let rect = canvas.getBoundingClientRect();
         let root = document.documentElement;
@@ -36,21 +59,6 @@
             x: mouseX,
             y: mouseY
         };
-    };
-
-    window.onload = () => {
-        canvas = document.getElementById('gameCanvas');
-        canvasContext = canvas.getContext('2d');
-
-        let framePerSecond = 30;
-        let oneSecond = 1000;
-        setInterval(() => {
-            changeXY();
-            drawEverything();
-        }, oneSecond / framePerSecond);
-
-        //mouse movement listener
-        canvas.addEventListener('mousemove', mouseMoved);
     };
 
     //mouse listener function
@@ -72,13 +80,27 @@
         }
     };
 
-    //reset ball position
+    //
+    keyPressed = () => display = true;
+
+    //reset ball position and check for winner
     ballReset = () => {
+        //do we have a winner?
+        if (paddle2score >= WINNING_SCORE || paddle1score >= WINNING_SCORE) {
+            display = false;
+            canvasContext.fillStyle = "white";
+            canvasContext.fillText('we have a winner!! press any key to contine', canvas.width / 2, 50);
+            canvasContext.fillText(paddle1score + ' : ' + paddle2score, canvas.width / 2, 100);
+            paddle2score = paddle1score = 0;
+        }
+
         ballSpeedX = -ballSpeedX;
-        
+        ballSpeedY = 5;
+
         ballX = canvas.width / 2;
         ballY = canvas.height / 2;
-    }
+    };
+
     //make ball move
     changeXY = () => {
         ballX += ballSpeedX;
@@ -95,11 +117,13 @@
                 let deltaY = (ballY - (paddle2Y + PADDLE_HEIGHT / 2)) * 0.35;
                 let deltaX = deltaY;
                 ballSpeedY = deltaY;
+
             }
             else {
                 paddle1score++;
                 ballReset();
             }
+            console.log(ballSpeedY);
         }
 
         //collision on left side
@@ -108,7 +132,7 @@
                 ballSpeedX *= -1;
 
                 //give ball an emph based on location of paddle hit
-                let deltaY = (ballY - (paddle1Y + PADDLE_HEIGHT / 2)) * 0.3;
+                let deltaY = (ballY - (paddle1Y + PADDLE_HEIGHT / 2)) * 0.35;
                 let deltaX = deltaY;
                 ballSpeedY = deltaY;
             }
@@ -116,6 +140,7 @@
                 paddle2score++;
                 ballReset();
             }
+            console.log(ballSpeedY);
         }
 
         //y axis movement
