@@ -1,7 +1,18 @@
 <html>
 
+<div width = "800" height = "60">
+    <h1>My Snake Game</h1>
+</div>
+<canvas id="gameBanner" width="800" height="100"></canvas>
 <canvas id="gameCanvas" width="800" height="600"></canvas>
+
 <script>
+    //banner area
+    let banner;
+    let bannerContext;
+    let eatenApples = 0;
+
+    //game area
     const WIDTH = 800;
     const HEIGHT = 600;
 
@@ -9,7 +20,7 @@
     let canvasContext;
 
     //snake params
-    let snake;
+    let snakeContext;
     let snakeWidth = 50;
     const SNAKE_HEIGHT = 25;
     const INCREMENT = 5;
@@ -19,21 +30,31 @@
     let yIncrement = 0;
 
     //apple params
-    let apple;
+    let appleContext;
     const APPLE_RADIUS = 10;
     let appleX; //x and y coordinates are from center of circle
     let appleY;//this way the circle is fully in the canvas
 
     window.onload = () => {
+        //banner area
+        banner = document.getElementById('gameBanner');
+        bannerContext = banner.getContext('2d');
+        
+
+        //game area
         canvas = document.getElementById('gameCanvas');
-        snake = canvas.getContext('2d');
-        apple = canvas.getContext('2d');
+        snakeContext = canvas.getContext('2d');
+        appleContext = canvas.getContext('2d');
         canvasContext = canvas.getContext('2d');
         appleReset();
 
         let framePerSecond = 30;
         let oneSecond = 1000;
+
+        drawBanner();
+        
         setInterval(() => {
+            
             moveEverything();
             drawEverything();
         }, oneSecond / framePerSecond);
@@ -97,17 +118,25 @@
         if((snakeY > appleY - APPLE_RADIUS && snakeY < appleY + APPLE_RADIUS) 
         && (snakeX > appleX - APPLE_RADIUS && snakeX < appleX + APPLE_RADIUS)  ) 
         {
+            eatenApples++;
+            drawBanner();
             appleReset();
         }
     }
 
+    drawBanner = () =>{      
+        colorRect(bannerContext, 0, 0, banner.width, banner.height, 'white');
+        bannerContext.font = "30px Arial";
+        bannerContext.fillStyle = 'black';
+        bannerContext.fillText("Apples Eaten: " + eatenApples, 50, 30);
+    }
     drawEverything = () => {
         //canvas
         colorRect(canvasContext, 0, 0, canvas.width, canvas.height, 'black');
         //snake
-        colorRect(snake, snakeX, snakeY, snakeWidth, SNAKE_HEIGHT, 'green');
+        colorRect(snakeContext, snakeX, snakeY, snakeWidth, SNAKE_HEIGHT, 'green');
         //apple     
-        colorCircle(apple, appleX, appleY, APPLE_RADIUS, 'red');
+        colorCircle(appleContext, appleX, appleY, APPLE_RADIUS, 'red');
     };
 
     //create rectangle
