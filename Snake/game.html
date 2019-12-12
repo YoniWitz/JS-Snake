@@ -1,10 +1,10 @@
 <html>
 
-<div width = "800" height = "60">
+<div width = "400" height = "60">
     <h1>My Snake Game</h1>
 </div>
-<canvas id="gameBanner" width="800" height="100"></canvas>
-<canvas id="gameCanvas" width="800" height="600"></canvas>
+<canvas id="gameBanner" width="400" height="50"></canvas>
+<canvas id="gameCanvas" width="400" height="400"></canvas>
 
 <script>
     //banner area
@@ -13,25 +13,29 @@
     let eatenApples = 0;
 
     //game area
-    const WIDTH = 800;
-    const HEIGHT = 600;
+    const WIDTH = 400;
+    const HEIGHT = 400;
 
     let canvas;
     let canvasContext;
 
     //snake params
     let snakeContext;
-    let snakeWidth = 50;
-    const SNAKE_HEIGHT = 25;
+    let snakeLength = 10;
+    const SNAKE_HEIGHT = 10;
     const INCREMENT = 5;
-    let snakeX = Math.random() * WIDTH - snakeWidth;//x and y coordinates are from top left corner of snake.
-    let snakeY = Math.random() * HEIGHT - SNAKE_HEIGHT;//must makesure snake starts fully on canvas
-    let xIncrement = 0;
+    let snakeArray = [
+        { x: 60, y: 60 },
+        { x: 40, y: 60 }
+    ];
+//let snakeX = Math.random() * WIDTH - snakeWidth;//x and y coordinates are from top left corner of snake.
+//let snakeY = Math.random() * HEIGHT - SNAKE_HEIGHT;//must makesure snake starts fully on canvas
+    let xIncrement = 5;
     let yIncrement = 0;
 
     //apple params
     let appleContext;
-    const APPLE_RADIUS = 10;
+    const APPLE_RADIUS = SNAKE_HEIGHT/2;//so the circumference is same as snake 
     let appleX; //x and y coordinates are from center of circle
     let appleY;//this way the circle is fully in the canvas
 
@@ -40,7 +44,6 @@
         banner = document.getElementById('gameBanner');
         bannerContext = banner.getContext('2d');
         
-
         //game area
         canvas = document.getElementById('gameCanvas');
         snakeContext = canvas.getContext('2d');
@@ -52,8 +55,8 @@
         let oneSecond = 1000;
 
         drawBanner();
-
-        setInterval(() => {           
+        
+        setInterval(() => {            
             moveEverything();
             drawEverything();
         }, oneSecond / framePerSecond);
@@ -63,7 +66,7 @@
     };
 
     //reset apple position
-    appleReset = () => {
+    appleReset = () => {    
         appleX = Math.random() * (WIDTH - APPLE_RADIUS * 2) + APPLE_RADIUS;
         appleY = Math.random() * (HEIGHT - APPLE_RADIUS * 2) + APPLE_RADIUS;
     }
@@ -74,52 +77,78 @@
         switch (code) {
             //right arrow
             case 39:
-                xIncrement = INCREMENT;
-                yIncrement = 0;
+                if(yIncrement !== 0){//if was already going right or left, don't change. 
+                    xIncrement = INCREMENT;
+                    yIncrement = 0;
+                }
                 break;
             //left arrow
             case 37:
-                xIncrement = -INCREMENT;
-                yIncrement = 0;
+                if(yIncrement !== 0){//if was already going right or left, don't change.
+                    xIncrement = -INCREMENT;
+                    yIncrement = 0;
+                }
                 break;
             //up arrow
-            case 38:
-                yIncrement = -INCREMENT;
-                xIncrement = 0;
+            case 38:    
+                if(xIncrement !== 0){//if was already going up or down, don't change.
+                    xIncrement = 0;
+                    yIncrement = -INCREMENT;
+                }
                 break;
             //down arrow
             case 40:
-                yIncrement = INCREMENT;
-                xIncrement = 0;
+                if(xIncrement !== 0){//if was already going up or down, don't change.
+                    xIncrement = 0;
+                    yIncrement = INCREMENT;     
+                }           
                 break;
         }
     };
 
     //make snake move
-    moveEverything = () => {
-        snakeX += xIncrement;
-        snakeY += yIncrement;
+    moveEverything = () => {      
+        nextStep = {
+            x:snakeArray[0].x + xIncrement,
+            y:snakeArray[0].y + yIncrement
+        };
+      
+        //add head 
+        snakeArray.unshift(nextStep);
+        //remove tail
+        snakeArray.pop();
 
         //keeping snake in canvas
-        if(snakeX > WIDTH)
-            snakeX = 0;
-        if(snakeX < 0){
-            snakeX = WIDTH;
+        if(snakeArray[0].x > WIDTH)
+        {
+            snakeArray[0].x = 0;
         }
-        if(snakeY > HEIGHT){
-            snakeY = 0;
+        if(snakeArray[0].x < 0){
+            snakeArray[0].x  = WIDTH;
         }
-        if(snakeY < 0){
-            snakeY = HEIGHT;
+        if(snakeArray[0].y > HEIGHT){
+            snakeArray[0].y = 0;
+        }
+        if(snakeArray[0].y < 0){
+            snakeArray[0].y = HEIGHT;
         }
 
-        //collission
-        if((snakeY > appleY - APPLE_RADIUS && snakeY < appleY + APPLE_RADIUS) 
-        && (snakeX > appleX - APPLE_RADIUS && snakeX < appleX + APPLE_RADIUS)  ) 
+        //collission with apple
+        if((snakeArray[0].y > (appleY - APPLE_RADIUS) && snakeArray[0].y < appleY + APPLE_RADIUS) 
+        && (snakeArray[0].x > (appleX - APPLE_RADIUS) && snakeArray[0].x < appleX + APPLE_RADIUS)  ) 
         {
-            eatenApples++;
+            //update score
+            eatenApples++;           
             drawBanner();
+            //place new apple
             appleReset();
+            //add link to snake
+            newLink = {
+                x:snakeArray[snakeArray.length-1].x - xIncrement,
+                y:snakeArray[snakeArray.length-1].y - yIncrement
+            };            
+           
+            snakeArray.push(newLink);           
         }
     }
 
@@ -133,7 +162,8 @@
         //canvas
         colorRect(canvasContext, 0, 0, canvas.width, canvas.height, 'black');
         //snake
-        colorRect(snakeContext, snakeX, snakeY, snakeWidth, SNAKE_HEIGHT, 'green');
+        snakeArray.forEach((coordinate) => 
+        colorRect(snakeContext, coordinate.x, coordinate.y, snakeLength, SNAKE_HEIGHT, 'green'))
         //apple     
         colorCircle(appleContext, appleX, appleY, APPLE_RADIUS, 'red');
     };
@@ -151,7 +181,5 @@
         element.arc(distanceX, distanceY, radius, 0, Math.PI * 2, true);
         element.fill();
     }
-
 </script>
-
 </html>
