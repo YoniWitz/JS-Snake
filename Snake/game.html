@@ -7,6 +7,7 @@
 <canvas id="gameCanvas" width="400" height="400"></canvas>
 
 <script>
+    const DEBUG = false;
     //banner area
     let banner;
     let bannerContext;
@@ -23,14 +24,13 @@
     let snakeContext;
     let snakeLength = 10;
     const SNAKE_HEIGHT = 10;
-    const INCREMENT = 5;
+    const INCREMENT = 10;
     let snakeArray = [
         { x: 60, y: 60 },
         { x: 40, y: 60 }
     ];
-//let snakeX = Math.random() * WIDTH - snakeWidth;//x and y coordinates are from top left corner of snake.
-//let snakeY = Math.random() * HEIGHT - SNAKE_HEIGHT;//must makesure snake starts fully on canvas
-    let xIncrement = 5;
+
+    let xIncrement = INCREMENT;
     let yIncrement = 0;
 
     //apple params
@@ -41,8 +41,8 @@
 
     //game control
     let pause = true;
-
-
+    let start = true;
+    let gameOver = false;
     window.onload = () => {
         //banner area
         banner = document.getElementById('gameBanner');
@@ -55,16 +55,24 @@
         canvasContext = canvas.getContext('2d');
         appleReset();
 
-        let framePerSecond = 30;
+        if(DEBUG){
+            appleX = 100;
+            appleY = 60 ;
+        }
+
+        let framePerSecond = 10 ;
         let oneSecond = 1000;
 
-        drawBanner();
+        
         drawEverything();
         setInterval(() => {     
-            if(pause)       {
-                bannerContext.font = "20px Arial";
-                bannerContext.fillStyle = 'black';
-                bannerContext.fillText("Press Spacebar to continue", 50, 25);
+            if(pause) {
+                if(start){
+                    drawBannerStart();
+                }
+                else{
+                    drawBannerPause();
+                }
             }
             else{
                 drawBanner();
@@ -78,9 +86,20 @@
     };
 
     //reset apple position
-    appleReset = () => {    
-        appleX = Math.random() * (WIDTH - APPLE_RADIUS * 2) + APPLE_RADIUS;
-        appleY = Math.random() * (HEIGHT - APPLE_RADIUS * 2) + APPLE_RADIUS;
+    appleReset = () => {          
+        let x = Math.random() * (WIDTH - APPLE_RADIUS * 2) + APPLE_RADIUS;
+         appleX=  Math.round(x / 10) * 10;
+         let y =Math.random() * (HEIGHT - APPLE_RADIUS * 2) + APPLE_RADIUS;
+        appleY =  Math.round(y / 10) * 10;
+
+        if(DEBUG){
+            console.log(appleX + " " + appleY)
+        }
+        snakeArray.forEach(item => {
+            if(item.x === appleX && item.y === appleY){
+                appleReset();
+            }
+        })
     }
 
     //arrow listener function
@@ -90,6 +109,7 @@
             //space
             case 32:
                 pause = !pause;
+                start = false;
             //right arrow
             case 39:
                 if(yIncrement !== 0){//if was already going right or left, don't change. 
@@ -128,41 +148,31 @@
             y:snakeArray[0].y + yIncrement
         };
 
+        //if snake touches it self
         snakeArray.forEach(item => {
             if(item.x === nextStep.x && item.y === nextStep.y){
-                console.log('game over');    
-                gameOver();        
+                console.log('game over');   
+                if(!DEBUG)
+                    gameOver();        
             }
         })
-      
-        //add head 
+
+        //if snake hits boarder
+        if(nextStep.x > WIDTH || nextStep.x < 0 || nextStep.y > HEIGHT || nextStep.y < 0)
+        {
+            console.log('game over');
+            if(!DEBUG){
+                gameOver();
+            }
+        }
+        
+        //creating movement 
         snakeArray.unshift(nextStep);
-        //remove tail
         snakeArray.pop();
 
-        //keeping snake in canvas
-        if(snakeArray[0].x > WIDTH)
-        {
-            console.log('game over');
-            gameOver();
-        }
-        if(snakeArray[0].x < 0){
-            console.log('game over');
-            gameOver();
-        }
-        if(snakeArray[0].y > HEIGHT){
-            console.log('game over');
-            gameOver();
-        }
-        if(snakeArray[0].y < 0){
-            console.log('game over');
-            gameOver(); 
-        }
-
-        //collission with apple
-        if((snakeArray[0].y > (appleY - APPLE_RADIUS) && snakeArray[0].y < appleY + APPLE_RADIUS) 
-        && (snakeArray[0].x > (appleX - APPLE_RADIUS) && snakeArray[0].x < appleX + APPLE_RADIUS)  ) 
-        {
+        //snake touches apple
+        if((nextStep.y === appleY) && (nextStep.x === appleX) )
+        {           
             //update score
             eatenApples++;   
             //place new apple
@@ -179,6 +189,7 @@
 
     gameOver = () =>{
         pause = true;   
+        start = true;
         bannerContext.font = "20px Arial";
         bannerContext.fillStyle = 'black';
         bannerContext.fillText("Game Over! ", 50, 60);
@@ -188,6 +199,21 @@
         colorRect(bannerContext, 0, 0, banner.width, banner.height, 'white');
         bannerContext.font = "20px Arial";
         bannerContext.fillStyle = 'black';
+        bannerContext.fillText("Press Spacebar to pause", 50, 25);
+        bannerContext.fillText("Apples Eaten: " + eatenApples, 50, 90);
+    }
+    drawBannerPause = () =>{ 
+        colorRect(bannerContext, 0, 0, banner.width, banner.height, 'white');
+        bannerContext.font = "20px Arial";
+        bannerContext.fillStyle = 'black';
+        bannerContext.fillText("Press Spacebar to continue", 50, 25);
+        bannerContext.fillText("Apples Eaten: " + eatenApples, 50, 90);
+    }
+    drawBannerStart = () =>{ 
+        colorRect(bannerContext, 0, 0, banner.width, banner.height, 'white');
+        bannerContext.font = "20px Arial";
+        bannerContext.fillStyle = 'black';
+        bannerContext.fillText("Press Spacebar to start", 50, 25);
         bannerContext.fillText("Apples Eaten: " + eatenApples, 50, 90);
     }
 
