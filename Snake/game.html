@@ -1,9 +1,9 @@
 <html>
 
-<div width = "400" height = "60">
+<div width = "800" height = "10">
     <h1>My Snake Game</h1>
 </div>
-<canvas id="gameBanner" width="400" height="50"></canvas>
+<canvas id="gameBanner" width="800" height="100"></canvas>
 <canvas id="gameCanvas" width="400" height="400"></canvas>
 
 <script>
@@ -39,6 +39,10 @@
     let appleX; //x and y coordinates are from center of circle
     let appleY;//this way the circle is fully in the canvas
 
+    //game control
+    let pause = true;
+
+
     window.onload = () => {
         //banner area
         banner = document.getElementById('gameBanner');
@@ -55,10 +59,18 @@
         let oneSecond = 1000;
 
         drawBanner();
-        
-        setInterval(() => {            
-            moveEverything();
-            drawEverything();
+        drawEverything();
+        setInterval(() => {     
+            if(pause)       {
+                bannerContext.font = "20px Arial";
+                bannerContext.fillStyle = 'black';
+                bannerContext.fillText("Press Spacebar to continue", 50, 25);
+            }
+            else{
+                drawBanner();
+                moveEverything();
+                drawEverything();
+            }
         }, oneSecond / framePerSecond);
 
         //arrows listener
@@ -75,6 +87,9 @@
     arrowPressed = (event) =>{
         var code = event.which;
         switch (code) {
+            //space
+            case 32:
+                pause = !pause;
             //right arrow
             case 39:
                 if(yIncrement !== 0){//if was already going right or left, don't change. 
@@ -115,7 +130,8 @@
 
         snakeArray.forEach(item => {
             if(item.x === nextStep.x && item.y === nextStep.y){
-                console.log('game over');           
+                console.log('game over');    
+                gameOver();        
             }
         })
       
@@ -127,16 +143,20 @@
         //keeping snake in canvas
         if(snakeArray[0].x > WIDTH)
         {
-            console.log('game over');  
+            console.log('game over');
+            gameOver();
         }
         if(snakeArray[0].x < 0){
-            console.log('game over');  
+            console.log('game over');
+            gameOver();
         }
         if(snakeArray[0].y > HEIGHT){
-            console.log('game over');  
+            console.log('game over');
+            gameOver();
         }
         if(snakeArray[0].y < 0){
-            console.log('game over');  
+            console.log('game over');
+            gameOver(); 
         }
 
         //collission with apple
@@ -144,8 +164,7 @@
         && (snakeArray[0].x > (appleX - APPLE_RADIUS) && snakeArray[0].x < appleX + APPLE_RADIUS)  ) 
         {
             //update score
-            eatenApples++;           
-            drawBanner();
+            eatenApples++;   
             //place new apple
             appleReset();
             //add link to snake
@@ -158,12 +177,20 @@
         }
     }
 
+    gameOver = () =>{
+        pause = true;   
+        bannerContext.font = "20px Arial";
+        bannerContext.fillStyle = 'black';
+        bannerContext.fillText("Game Over! ", 50, 60);
+    }
+
     drawBanner = () =>{      
         colorRect(bannerContext, 0, 0, banner.width, banner.height, 'white');
-        bannerContext.font = "30px Arial";
+        bannerContext.font = "20px Arial";
         bannerContext.fillStyle = 'black';
-        bannerContext.fillText("Apples Eaten: " + eatenApples, 50, 30);
+        bannerContext.fillText("Apples Eaten: " + eatenApples, 50, 90);
     }
+
     drawEverything = () => {
         //canvas
         colorRect(canvasContext, 0, 0, canvas.width, canvas.height, 'black');
