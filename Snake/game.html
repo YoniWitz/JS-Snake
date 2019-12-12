@@ -112,6 +112,13 @@
             x:snakeArray[0].x + xIncrement,
             y:snakeArray[0].y + yIncrement
         };
+
+        snakeArray.forEach(item => {
+            if(item.x === nextStep.x && item.y === nextStep.y){
+                console.log('game over');
+                
+            }
+        })
       
         //add head 
         snakeArray.unshift(nextStep);
