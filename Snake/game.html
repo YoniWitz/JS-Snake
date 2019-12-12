@@ -3,8 +3,8 @@
 <div width = "800" height = "60">
     <h1>My Snake Game</h1>
 </div>
-<canvas id="gameBanner" width="800" height="100"></canvas>
-<canvas id="gameCanvas" width="800" height="600"></canvas>
+<canvas id="gameBanner" width="800" height="50"></canvas>
+<canvas id="gameCanvas" width="800" height="400"></canvas>
 
 <script>
     //banner area
@@ -14,7 +14,7 @@
 
     //game area
     const WIDTH = 800;
-    const HEIGHT = 600;
+    const HEIGHT = 400;
 
     let canvas;
     let canvasContext;
@@ -23,9 +23,12 @@
     let snakeContext;
     let snakeWidth = 50;
     const SNAKE_HEIGHT = 25;
-    const INCREMENT = 5;
-    let snakeX = Math.random() * WIDTH - snakeWidth;//x and y coordinates are from top left corner of snake.
-    let snakeY = Math.random() * HEIGHT - SNAKE_HEIGHT;//must makesure snake starts fully on canvas
+    const INCREMENT = 5;let snake = [
+  { x: 60, y: 60 },
+  { x: 40, y: 60 }
+];
+//let snakeX = Math.random() * WIDTH - snakeWidth;//x and y coordinates are from top left corner of snake.
+//let snakeY = Math.random() * HEIGHT - SNAKE_HEIGHT;//must makesure snake starts fully on canvas
     let xIncrement = 0;
     let yIncrement = 0;
 
