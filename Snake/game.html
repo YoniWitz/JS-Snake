@@ -115,8 +115,7 @@
 
         snakeArray.forEach(item => {
             if(item.x === nextStep.x && item.y === nextStep.y){
-                console.log('game over');
-                
+                console.log('game over');           
             }
         })
       
@@ -128,16 +127,16 @@
         //keeping snake in canvas
         if(snakeArray[0].x > WIDTH)
         {
-            snakeArray[0].x = 0;
+            console.log('game over');  
         }
         if(snakeArray[0].x < 0){
-            snakeArray[0].x  = WIDTH;
+            console.log('game over');  
         }
         if(snakeArray[0].y > HEIGHT){
-            snakeArray[0].y = 0;
+            console.log('game over');  
         }
         if(snakeArray[0].y < 0){
-            snakeArray[0].y = HEIGHT;
+            console.log('game over');  
         }
 
         //collission with apple
