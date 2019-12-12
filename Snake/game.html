@@ -25,13 +25,10 @@
     let snakeLength = 10;
     const SNAKE_HEIGHT = 10;
     const INCREMENT = 10;
-    let snakeArray = [
-        { x: 60, y: 60 },
-        { x: 40, y: 60 }
-    ];
+    let snakeArray = [];
 
-    let xIncrement = INCREMENT;
-    let yIncrement = 0;
+    let xIncrement;
+    let yIncrement;
 
     //apple params
     let appleContext;
@@ -42,7 +39,7 @@
     //game control
     let pause = true;
     let start = true;
-    let gameOver = false;
+    let over = false;
     window.onload = () => {
         //banner area
         banner = document.getElementById('gameBanner');
@@ -53,12 +50,10 @@
         snakeContext = canvas.getContext('2d');
         appleContext = canvas.getContext('2d');
         canvasContext = canvas.getContext('2d');
-        appleReset();
+        
+        restartGame();
 
-        if(DEBUG){
-            appleX = 100;
-            appleY = 60 ;
-        }
+       
 
         let framePerSecond = 10 ;
         let oneSecond = 1000;
@@ -69,6 +64,9 @@
             if(pause) {
                 if(start){
                     drawBannerStart();
+                }
+                else if(over){
+                    drawBannerGameOver();
                 }
                 else{
                     drawBannerPause();
@@ -102,6 +100,20 @@
         })
     }
 
+    restartGame = () => {
+        snakeArray = [
+        { x: 60, y: 60 },
+        { x: 40, y: 60 }
+        ];
+
+        appleX = 100;
+        appleY = 60 ;
+
+        eatenApples = 0;
+
+        xIncrement = INCREMENT;
+        yIncrement = 0;
+    }
     //arrow listener function
     arrowPressed = (event) =>{
         var code = event.which;
@@ -110,6 +122,10 @@
             case 32:
                 pause = !pause;
                 start = false;
+                if(over){
+                    over = false;
+                    restartGame();
+                }
             //right arrow
             case 39:
                 if(yIncrement !== 0){//if was already going right or left, don't change. 
@@ -189,10 +205,7 @@
 
     gameOver = () =>{
         pause = true;   
-        start = true;
-        bannerContext.font = "20px Arial";
-        bannerContext.fillStyle = 'black';
-        bannerContext.fillText("Game Over! ", 50, 60);
+        over = true;
     }
 
     drawBanner = () =>{      
@@ -214,6 +227,15 @@
         bannerContext.font = "20px Arial";
         bannerContext.fillStyle = 'black';
         bannerContext.fillText("Press Spacebar to start", 50, 25);
+        bannerContext.fillText("Apples Eaten: " + eatenApples, 50, 90);
+    }
+
+    drawBannerGameOver = () =>{ 
+        colorRect(bannerContext, 0, 0, banner.width, banner.height, 'white');
+        bannerContext.font = "20px Arial";
+        bannerContext.fillStyle = 'black';
+        bannerContext.fillText("Press Spacebar to restart", 50, 25);
+        bannerContext.fillText("Game Over!!", 50, 60);
         bannerContext.fillText("Apples Eaten: " + eatenApples, 50, 90);
     }
 
