@@ -4,7 +4,7 @@
     <h1>My Snake Game</h1>
 </div>
 <canvas id="gameBanner" width="800" height="100"></canvas>
-<canvas id="gameCanvas" width="100" height="100"></canvas>
+<canvas id="gameCanvas" width="400" height="400"></canvas>
 
 <script>
     const DEBUG = false;
@@ -14,7 +14,7 @@
     let eatenApples;
 
     //game area
-    const HEIGHT = WIDTH = 100;
+    const HEIGHT = WIDTH = 400;
 
     let canvas;
     let canvasContext;
@@ -168,12 +168,14 @@
             y: snakeArray[0].y + yIncrement
         };
 
-        //if snake touches it self
+        //if snake touches itself
         snakeArray.forEach(item => {
-            if (item.x === nextStep.x && item.y === nextStep.y) {
-                console.log('game over');
+            if (item.x === nextStep.x && item.y === nextStep.y) {               
                 if (!DEBUG)
                     gameOver();
+                else{
+                    console.log('game over');
+                }
             }
         })
 
