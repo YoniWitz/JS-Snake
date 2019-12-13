@@ -237,6 +237,3 @@ colorCircle = (element, distanceX, distanceY, radius, color) => {
     element.fill();
 }
 
-increaseSpeed = () => framePerSecond++;
-decreaseSpeed = () => framePerSecond--;
-
