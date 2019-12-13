@@ -28,6 +28,7 @@ let appleY;//this way the circle is fully in the canvas
 
 //game control
 let gameStatus = "start";
+let framePerSecond;
 window.onload = () => {
     //banner area
     banner = document.getElementById('gameBanner');
@@ -41,7 +42,7 @@ window.onload = () => {
 
     restartGame();
 
-    let framePerSecond = 8;
+    framePerSecond = 8;
     let oneSecond = 1000;
 
     drawEverything();
@@ -235,3 +236,7 @@ colorCircle = (element, distanceX, distanceY, radius, color) => {
     element.arc(distanceX, distanceY, radius, 0, Math.PI * 2, true);
     element.fill();
 }
+
+increaseSpeed = () => framePerSecond++;
+decreaseSpeed = () => framePerSecond--;
+
