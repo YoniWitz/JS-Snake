@@ -52,7 +52,7 @@ window.onload = () => {
         }
         else if (gameStatus === "over") {
             drawBanner("restart");
-            bannerContext.fillText("Game Over!!", 50, 60);
+            bannerContext.fillText("Game Over!!", 50, 300);
         }
         else if (gameStatus === "paused") {
             drawBanner("continue");
@@ -209,8 +209,12 @@ drawBanner = (toWhat) => {
     colorRect(bannerContext, 0, 0, banner.width, banner.height, 'white');
     bannerContext.font = "20px Arial";
     bannerContext.fillStyle = 'black';
-    bannerContext.fillText("Press Spacebar to " + toWhat, 50, 25);
-    bannerContext.fillText("Apples Eaten: " + eatenApples, 50, 90);
+    bannerContext.fillText("Instructions: ", 50, 20);
+    bannerContext.fillText("1. Use keyboard arrows to navigate.",  50, 60);
+    bannerContext.fillText("2. Eat as many apples as you can.",  50, 100);
+    bannerContext.fillText("3. Avoid the walls and snake's body.",  50, 140);
+    bannerContext.fillText("Press Spacebar to " + toWhat, 50, 250);
+    bannerContext.fillText("Apples Eaten: " + eatenApples, 50, 350);
 }
 
 drawEverything = () => {
