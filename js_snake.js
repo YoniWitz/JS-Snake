@@ -129,7 +129,7 @@ appleReset = () => {
     let y = Math.random() * (game.HEIGHT - snake.INCREMENT * 2) + snake.INCREMENT;
     apple.y = Math.round(y / snake.INCREMENT) * snake.INCREMENT;
 
-    snake.array.forEach(item => {
+    snake.array.some(item => {
         if (item.x === apple.x && item.y === apple.y) {
             appleReset();
         }
@@ -233,24 +233,11 @@ isSnakeEatingApple = () => {
         apple.eaten++;
         //place new apple
         appleReset();
-        //add link to snake
+        //add link to snake (non proven theory to detect direction of next link)
         newLink = {
-            x: snake.array[snake.array.length - 1].x,
-            y: snake.array[snake.array.length - 1].y
+            x: 2*snake.array[snake.array.length - 1].x - snake.array[snake.array.length - 2].x,
+            y: 2*snake.array[snake.array.length - 1].y - snake.array[snake.array.length - 2].y
         };
-
-        if (snake.direction === DIRECTIONS.NORTH) {
-            newLink.y += snake.INCREMENT;
-        }
-        else if (snake.direction === DIRECTIONS.SOUTH) {
-            newLink.y -= snake.INCREMENT;
-        }
-        else if (snake.direction === DIRECTIONS.EAST) {
-            newLink.x -= snake.INCREMENT;
-        }
-        else if (snake.direction === DIRECTIONS.WEST) {
-            newLink.x += snake.INCREMENT;
-        }
 
         snake.array.push(newLink);
     }
