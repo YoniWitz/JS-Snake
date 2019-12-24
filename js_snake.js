@@ -2,32 +2,53 @@ const DEBUG = false;
 //banner area
 let banner;
 let bannerContext;
-let eatenApples;
 
 //game area
-const HEIGHT = WIDTH = 400;
+let game = {
+    HEIGHT: 400,
+    WIDTH: 400,
+    gameStatus: null
+}
 
 let canvas;
 let canvasContext;
 
 //snake params
 let snakeContext;
-let snakeLength = 10;
-const SNAKE_HEIGHT = 10;
-const INCREMENT = 10;
-let snakeArray;
 
-let xIncrement;
-let yIncrement;
+let snake = {
+    LENGTH: 10,
+    HEIGHT: 10,
+    INCREMENT: 10,
+    array: null,
+    direction: null
+}
+
+const DIRECTIONS = {
+    SOUTH: "SOUTH",
+    NORTH: "NORTH",
+    WEST: "WEST",
+    EAST: "EAST"
+}
 
 //apple params
 let appleContext;
-const APPLE_RADIUS = SNAKE_HEIGHT / 2;//so the diameter is same as snake 
-let appleX; //x and y coordinates are from center of circle
-let appleY;//this way the circle is fully in the canvas
+
+let apple = {
+    RADIUS: snake.HEIGHT / 2, // so the diameter is same as snake
+    x: null, //x and y coordinates are from center of circle
+    y: null, //this way the circle is fully in the canvas  
+    eaten: null
+}
 
 //game control
-let gameStatus = "start";
+const GAME_STATUSES = {
+    START: "START",
+    PAUSED: "PAUSED",
+    OVER: "OVER",
+    PLAYING: "PLAYING"
+}
+
 let framePerSecond;
 window.onload = () => {
     //banner area
@@ -41,26 +62,25 @@ window.onload = () => {
     canvasContext = canvas.getContext('2d');
 
     restartGame();
+    game.gameStatus = GAME_STATUSES.START;
 
     framePerSecond = 8;
     let oneSecond = 1000;
 
-    drawEverything();
+
     setInterval(() => {
-        if (gameStatus === "start") {
-            drawBanner(gameStatus);
+        if (game.gameStatus === GAME_STATUSES.START) {
+            drawBanner(game.gameStatus);
         }
-        else if (gameStatus === "over") {
+        else if (game.gameStatus === GAME_STATUSES.OVER) {
             drawBanner("restart");
             bannerContext.fillText("Game Over!!", 50, 300);
         }
-        else if (gameStatus === "paused") {
+        else if (game.gameStatus === GAME_STATUSES.PAUSED) {
             drawBanner("continue");
         }
         else {
-            drawBanner("pause");
-            moveEverything();
-            drawEverything();
+            play();
         }
     }, oneSecond / framePerSecond);
 
@@ -68,35 +88,49 @@ window.onload = () => {
     document.addEventListener('keydown', keyPressed);
 };
 
+play = () => {
+    drawBanner("pause");
+
+    //must return false to break from forEach loop
+    if (isSnakeEatingItself() || isSnakeHittingBorder())
+        game.gameStatus = GAME_STATUSES.OVER;
+    else
+        moveSnake();
+
+    isSnakeEatingApple();
+
+    drawCanvas();
+    drawSnake();
+    drawApple();
+}
+
 restartGame = () => {
-    snakeArray = [
-        { x: WIDTH / INCREMENT, y: HEIGHT / 2 },
-        { x: WIDTH / INCREMENT - INCREMENT, y: HEIGHT / 2 },
-        { x: WIDTH / INCREMENT - INCREMENT * 2, y: HEIGHT / 2 },
-        { x: WIDTH / INCREMENT - INCREMENT * 3, y: HEIGHT / 2 }
+    snake.array = [
+        { x: game.WIDTH / snake.INCREMENT, y: game.HEIGHT / 2 },
+        { x: game.WIDTH / snake.INCREMENT - snake.INCREMENT, y: game.HEIGHT / 2 },
+        { x: game.WIDTH / snake.INCREMENT - snake.INCREMENT * 2, y: game.HEIGHT / 2 },
+        { x: game.WIDTH / snake.INCREMENT - snake.INCREMENT * 3, y: game.HEIGHT / 2 }
     ];
-
     appleReset();
+    apple.eaten = 0;
 
-    eatenApples = 0;
+    snake.direction = DIRECTIONS.EAST;
 
-    xIncrement = INCREMENT;
-    yIncrement = 0;
+    drawCanvas();
+    drawSnake();
+    drawApple();
 }
 
 //reset apple position. must be within the canvas and alligned with the snake. watch the radius
 appleReset = () => {
-    let x = Math.random() * (WIDTH - INCREMENT * 2) + INCREMENT;
-    appleX = Math.round(x / INCREMENT) * INCREMENT;
+    let x = Math.random() * (game.WIDTH - snake.INCREMENT * 2) + snake.INCREMENT;
+    apple.x = Math.round(x / snake.INCREMENT) * snake.INCREMENT;
 
-    let y = Math.random() * (HEIGHT - INCREMENT * 2) + INCREMENT;
-    appleY = Math.round(y / INCREMENT) * INCREMENT;
+    let y = Math.random() * (game.HEIGHT - snake.INCREMENT * 2) + snake.INCREMENT;
+    apple.y = Math.round(y / snake.INCREMENT) * snake.INCREMENT;
 
-    if (DEBUG) {
-        console.log(appleX, appleY);
-    }
-    snakeArray.forEach(item => {
-        if (item.x === appleX && item.y === appleY) {
+    snake.array.forEach(item => {
+        if (item.x === apple.x && item.y === apple.y) {
             appleReset();
         }
     })
@@ -109,135 +143,148 @@ keyPressed = (event) => {
     switch (code) {
         //space
         case 32:
-            if (gameStatus === "start") {
-                gameStatus = "playing";
+            if (game.gameStatus === GAME_STATUSES.START) {
+                game.gameStatus = GAME_STATUSES.PLAYING;
             }
-            else if (gameStatus === "over") {
-                gameStatus = "playing";
+            else if (game.gameStatus === GAME_STATUSES.OVER) {
+                game.gameStatus = GAME_STATUSES.PLAYING;
                 restartGame();
             }
-            else if (gameStatus === "paused") {
-                gameStatus = "playing"
+            else if (game.gameStatus === GAME_STATUSES.PAUSED) {
+                game.gameStatus = GAME_STATUSES.PLAYING;
             }
-            else if (gameStatus === "playing") {
-                gameStatus = "paused";
+            else if (game.gameStatus === GAME_STATUSES.PLAYING) {
+                game.gameStatus = GAME_STATUSES.PAUSED;
             }
             break;
         //right arrow
         case 39:
-            if (yIncrement !== 0) {//if was already going right or left, don't change. 
-                xIncrement = INCREMENT;
-                yIncrement = 0;
+            if (snake.direction !== DIRECTIONS.WEST && snake.direction !== DIRECTIONS.EAST) {//if was already going right or left, don't change. 
+                snake.direction = DIRECTIONS.EAST;
             }
             break;
         //left arrow
         case 37:
-            if (yIncrement !== 0) {//if was already going right or left, don't change.
-                xIncrement = -INCREMENT;
-                yIncrement = 0;
+            if (snake.direction !== DIRECTIONS.EAST && snake.direction !== DIRECTIONS.WEST) {//if was already going right or left, don't change.
+                snake.direction = DIRECTIONS.WEST;
             }
             break;
         //up arrow
         case 38:
-            if (xIncrement !== 0) {//if was already going up or down, don't change.
-                xIncrement = 0;
-                yIncrement = -INCREMENT;
+            if (snake.direction !== DIRECTIONS.NORTH && snake.direction !== DIRECTIONS.SOUTH) {//if was already going right or left, don't change.
+                snake.direction = DIRECTIONS.NORTH;
             }
             break;
         //down arrow
         case 40:
-            if (xIncrement !== 0) {//if was already going up or down, don't change.
-                xIncrement = 0;
-                yIncrement = INCREMENT;
+            if (snake.direction !== DIRECTIONS.NORTH && snake.direction !== DIRECTIONS.SOUTH) {//if was already going right or left, don't change.
+                snake.direction = DIRECTIONS.SOUTH;
             }
             break;
-    }
+
+    };
     document.addEventListener('keydown', keyPressed);
-};
+}
 
 //make snake move
-moveEverything = () => {
+moveSnake = () => {
     nextStep = {
-        x: snakeArray[0].x + xIncrement,
-        y: snakeArray[0].y + yIncrement
+        x: snake.array[0].x,
+        y: snake.array[0].y
     };
 
-    //if snake touches itself
-    snakeArray.forEach(item => {
-        if (item.x === nextStep.x && item.y === nextStep.y) {
-            if (!DEBUG)
-                gameOver();
-            else {
-                console.log('game over');
-            }
-        }
-    })
-
-    //if snake hits boarder
-    if (nextStep.x >= WIDTH - INCREMENT || nextStep.x <= 0 || nextStep.y >= HEIGHT - INCREMENT || nextStep.y <= 0) {
-        console.log('game over');
-        if (!DEBUG) {
-            gameOver();
-        }
+    if (snake.direction === DIRECTIONS.NORTH) {
+        nextStep.y -= snake.INCREMENT;
+    }
+    else if (snake.direction === DIRECTIONS.SOUTH) {
+        nextStep.y += snake.INCREMENT;
+    }
+    else if (snake.direction === DIRECTIONS.EAST) {
+        nextStep.x += snake.INCREMENT;
+    }
+    else if (snake.direction === DIRECTIONS.WEST) {
+        nextStep.x -= snake.INCREMENT;
     }
 
+    //creating movement 
+    snake.array.unshift(nextStep);
+    snake.array.pop();
+}
+
+isSnakeEatingItself = () => {
+    let flag = false;
+    snake.array.forEach((item, index) => {
+        if (index !== 0 && item.x === snake.array[0].x && item.y === snake.array[0].y) {
+            flag = true;
+        }
+    })
+    return flag;
+}
+
+isSnakeHittingBorder = () => {
+    //if snake hits boarder
+    return (snake.array[0].x > game.WIDTH - snake.INCREMENT || snake.array[0].x < 0 || snake.array[0].y > game.HEIGHT - snake.INCREMENT || snake.array[0].y <   0)
+}
+
+isSnakeEatingApple = () => {
     //snake touches apple
-    if ((nextStep.y === appleY) && (nextStep.x === appleX)) {
+    if ((snake.array[0].y === apple.y) && (snake.array[0].x === apple.x)) {
         //update score
-        eatenApples++;
+        apple.eaten++;
         //place new apple
         appleReset();
         //add link to snake
         newLink = {
-            x: snakeArray[snakeArray.length - 1].x - xIncrement,
-            y: snakeArray[snakeArray.length - 1].y - yIncrement
+            x: snake.array[snake.array.length - 1].x,
+            y: snake.array[snake.array.length - 1].y
         };
 
-        snakeArray.push(newLink);
+        if (snake.direction === DIRECTIONS.NORTH) {
+            newLink.y += snake.INCREMENT;
+        }
+        else if (snake.direction === DIRECTIONS.SOUTH) {
+            newLink.y -= snake.INCREMENT;
+        }
+        else if (snake.direction === DIRECTIONS.EAST) {
+            newLink.x -= snake.INCREMENT;
+        }
+        else if (snake.direction === DIRECTIONS.WEST) {
+            newLink.x += snake.INCREMENT;
+        }
+
+        snake.array.push(newLink);
     }
-
-    //creating movement 
-    snakeArray.unshift(nextStep);
-    snakeArray.pop();
-}
-
-gameOver = () => {
-    gameStatus = "over";
 }
 
 drawBanner = (toWhat) => {
-    colorRect(bannerContext, 0, 0, banner.width, banner.height, 'white');
+    bannerContext.fillStyle = 'white';
+    bannerContext.fillRect(0, 0, banner.width, banner.height);
     bannerContext.font = "20px Arial";
     bannerContext.fillStyle = 'black';
     bannerContext.fillText("Instructions: ", 50, 20);
-    bannerContext.fillText("1. Use keyboard arrows to navigate.",  50, 60);
-    bannerContext.fillText("2. Eat as many apples as you can.",  50, 100);
-    bannerContext.fillText("3. Avoid the walls and snake's body.",  50, 140);
+    bannerContext.fillText("1. Use keyboard arrows to navigate.", 50, 60);
+    bannerContext.fillText("2. Eat as many apples as you can.", 50, 100);
+    bannerContext.fillText("3. Avoid the walls and snake's body.", 50, 140);
     bannerContext.fillText("Press Spacebar to " + toWhat, 50, 250);
-    bannerContext.fillText("Apples Eaten: " + eatenApples, 50, 350);
+    bannerContext.fillText("Apples Eaten: " + apple.eaten, 50, 350);
 }
 
-drawEverything = () => {
-    //canvas
-    colorRect(canvasContext, 0, 0, canvas.width, canvas.height, 'black');
-    //snake
-    snakeArray.forEach((coordinate) =>
-        colorRect(snakeContext, coordinate.x, coordinate.y, snakeLength, SNAKE_HEIGHT, 'green'))
-    //apple     
-    colorCircle(appleContext, appleX + APPLE_RADIUS, appleY + APPLE_RADIUS, APPLE_RADIUS, 'red');
-};
+drawCanvas = () => {
+    canvasContext.fillStyle = 'black';
+    canvasContext.fillRect(0, 0, canvas.width, canvas.height);
+}
 
-//create rectangle
-colorRect = (element, distanceX, distanceY, shapeHeight, shapeWidth, color) => {
-    element.fillStyle = color;
-    element.fillRect(distanceX, distanceY, shapeHeight, shapeWidth);
-};
+drawSnake = () => {
+    snake.array.forEach((coordinate) => {
+        snakeContext.fillStyle = 'green';
+        snakeContext.fillRect(coordinate.x, coordinate.y, snake.LENGTH, snake.HEIGHT);
+    });
+}
 
-//create circle
-colorCircle = (element, distanceX, distanceY, radius, color) => {
-    element.fillStyle = color;
-    element.beginPath();
-    element.arc(distanceX, distanceY, radius, 0, Math.PI * 2, true);
-    element.fill();
+drawApple = () => {
+    appleContext.fillStyle = 'red';
+    appleContext.beginPath();
+    appleContext.arc(apple.x + apple.RADIUS, apple.y + apple.RADIUS, apple.RADIUS, 0, Math.PI * 2, true);
+    appleContext.fill();
 }
 
