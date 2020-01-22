@@ -9,7 +9,7 @@ Classic Snake Game Written entirely in Java Script, HTML and CSS
 ## Summary
 12/15/2019
 
-I began participating in a 'Software Development Mastermind' mentorship program towards the end of 2019. The purpose of the program is to strengthen and expand my skills as a Full Stack developer. The completed work is showcased on my GitHub and profile/personal website.
+I began participating in a 'Software Development Mastermind' mentorship program towards the end of 2019. The purpose of the program is to strengthen and expand my skills as a Full Stack developer. The completed work is showcased on my GitHub and portfolio/personal website.
 
 This Snake game is the first project of the series. It enhanced my Java Script knowledge and it also introduced me to building games with canvas. 
 
