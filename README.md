@@ -7,12 +7,13 @@ Classic Snake Game Written entirely in Java Script, HTML and CSS
 <image src="./images/snake_snapshot.bmp">
 
 ## Summary
-In this project I learned how to use canvas and build Java Script based games
+12/15/2019
 
-With the new year approaching, I'd like to expand my profile which describes my programming skills to include wider and diverse capabilities. Ultimately, my goal is to land a job which incorporates these multiple skills. I would also like to demonstrate my abilities and wide knowledge of the craft. 
-Therefore, I have begun revising the site and adding apps to my GitHub repository. 
+I began participating in a 'Software Development Mastermind' mentorship program towards the end of 2019. The purpose of the program is to strengthen and expand my skills as a Full Stack developer. The completed work is showcased on my GitHub and profile/personal website.
 
-This is the first project in a series of many more to come where I'll provide recruiters and employers the opportunity to go over my code in a coherent and concise manner. I plan to build a comprehensive website, impress the viewer, enhance my skills and most importantly do what I love most, coding. 
+This Snake game is the first project of the series. It enhanced my Java Script knowledge and it also introduced me to building games with canvas. 
+
+My ultimate goal is to land a job that incorporates my skills and utilizes my abilities and outgoing personality. So if you enjoyed reviewing my code as much as I did writing it, please find me on one of the links provided below.
 
 ##  Installation Instructions
 
